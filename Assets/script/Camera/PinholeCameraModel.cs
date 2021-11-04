@@ -7,17 +7,17 @@ public class PinholeCameraModel : MonoBehaviour
     Camera cam;
     public int width=1280;
     public int height=720;
-    public float ppx=636.660f;
-    public float ppy=366.721f;
-    public float cx=636.660f;
-    public float cy=366.721f;
+    public float fx= 612.5118408203125f;
+    public float fy= 612.4344482421875f;
+    public float cx= 636.660400390625f;
+    public float cy= 366.721923828125f;
 
     // Start is called before the first frame update
     void Start()
     {
         cam = GetComponent<Camera>();
 
-        this.changeCameraParam(width,height,ppx,ppy,cx,cy);
+        this.changeCameraParam(width,height,fx,fy,cx,cy);
         cam.targetTexture = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
     }
 

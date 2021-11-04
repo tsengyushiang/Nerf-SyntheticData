@@ -7,16 +7,7 @@ using System;
 public class Capture : MonoBehaviour
 {
     public int FileCounter = 0;
-
-    private void LateUpdate()
-    {
-        if (Input.GetKeyDown(KeyCode.F9))
-        {
-            CamCapture();  
-        }
-    }
-
-    void CamCapture()
+    public void CaptureColor(string names)
     {
         Camera cam = GetComponent<Camera>();
         RenderTexture currentRT = RenderTexture.active;
@@ -32,7 +23,7 @@ public class Capture : MonoBehaviour
         var Bytes = Image.EncodeToPNG();
         Destroy(Image);
  
-        File.WriteAllBytes(Application.dataPath + "/"+ name+"_" + String.Format("{0:D4}", FileCounter) + ".png", Bytes);
+        File.WriteAllBytes(names, Bytes);
         FileCounter++;
     }
 }
