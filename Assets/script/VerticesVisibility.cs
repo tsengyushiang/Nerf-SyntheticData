@@ -25,8 +25,9 @@ public class VerticesVisibility : MonoBehaviour
     {
         List<VisiblePointRecord> record = new List<VisiblePointRecord>();
 
-        foreach (Vector3 vertex in vertices)
+        foreach (Vector3 vertexLocal in vertices)
         {
+            Vector3 vertex = meshfilter.gameObject.transform.localToWorldMatrix.MultiplyPoint(vertexLocal);
             VisiblePointRecord r;
             r.xyz = vertex;
             r.uv = new List<Vector2>();
