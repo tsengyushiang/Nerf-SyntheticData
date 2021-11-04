@@ -6,9 +6,20 @@ using System.IO;
 public class ExportColmap : MonoBehaviour
 {
     public VerticesVisibility vertexIterator;
+    public CamManager camManager;
 
-    public string[] names;
-    public GameObject[] cams;
+    string[] names;
+    GameObject[] cams;
+    void Start()
+    {
+        List<string> camName = new List<string>();
+        cams = camManager.cameras.ToArray();
+        for(int i = 0; i < cams.Length; i++)
+        {
+            camName.Add(string.Format("camer_{0}", i));
+        }
+        names = camName.ToArray();
+    }
     void OnGUI()
     {
         if (GUI.Button(new Rect(10, 10, 200, 50), "save colmap model"))
@@ -24,6 +35,7 @@ public class ExportColmap : MonoBehaviour
             writeCameraIntrinsics();
             writeCamerapose(result);
             writepoints3d(result);
+            Debug.Log("export colmap data done, get your result at " + Application.streamingAssetsPath);
         }
     }
 
