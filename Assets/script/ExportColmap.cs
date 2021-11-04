@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Diagnostics;
 
 public class ExportColmap : MonoBehaviour
 {
@@ -10,6 +11,12 @@ public class ExportColmap : MonoBehaviour
 
     string[] names;
     GameObject[] cams;
+
+    string imagefolder = Application.streamingAssetsPath + "/images/";
+    string imagefolder1 = Application.streamingAssetsPath + "/images_1/";
+    string maskfolder = Application.streamingAssetsPath + "/masks_1/";
+    string sparseReconBinary = Application.streamingAssetsPath + "/sparse/0";
+    string sparseReconFolder = Application.streamingAssetsPath + "/sparse/unity";
     void Start()
     {
         List<string> camName = new List<string>();
@@ -24,6 +31,12 @@ public class ExportColmap : MonoBehaviour
     {
         if (GUI.Button(new Rect(10, 10, 200, 50), "save colmap model"))
         {
+            Directory.CreateDirectory(sparseReconBinary);
+            Directory.CreateDirectory(sparseReconFolder);
+            Directory.CreateDirectory(imagefolder);
+            Directory.CreateDirectory(imagefolder1);
+            Directory.CreateDirectory(maskfolder);
+
             List<Camera> camComponents = new List<Camera>();
             foreach(GameObject obj in cams)
             {
@@ -31,14 +44,28 @@ public class ExportColmap : MonoBehaviour
             }            
             List<VisiblePointRecord> result = vertexIterator.calVisibility(camComponents.ToArray());
 
-            writeCameraCapture();
+            writeCameraCapture(imagefolder);
+            writeCameraCapture(imagefolder1);
+            writeCameraMask(maskfolder);
             writeCameraIntrinsics();
             writeCamerapose(result);
             writepoints3d(result);
-            Debug.Log("export colmap data done, get your result at " + Application.streamingAssetsPath);
+            UnityEngine.Debug.Log("export colmap data done, get your result at " + Application.streamingAssetsPath);
+            convertColmapModelTXT2Bin();
+        }
+
+        if (GUI.Button(new Rect(10, 60, 200, 50), "save raw data json"))
+        {
+            writeCameraRaw();
         }
     }
-
+    void convertColmapModelTXT2Bin()
+    {
+        Process p = Process.Start(new ProcessStartInfo(@"C:\Users\yushiang\Downloads\COLMAP-3.6-windows-cuda\COLMAP.bat")
+        {
+            Arguments = "model_converter --input_path " + sparseReconFolder + " --output_path " + sparseReconBinary + " --output_type BIN"
+        }) ;
+    }
     void writepoints3d(List<VisiblePointRecord> result)
     {
         /*
@@ -48,7 +75,7 @@ public class ExportColmap : MonoBehaviour
             63390 1.67241 0.292931 0.609726 115 121 122 1.33927 16 6542 15 7345 6 6714 14 7227
             63376 2.01848 0.108877 -0.0260841 102 209 250 1.73449 16 6519 15 7322 14 7212 8 3991
          */
-        string path = Application.streamingAssetsPath + "/points3D.txt";
+        string path = sparseReconFolder + "/points3D.txt";
         StreamWriter writer = new StreamWriter(path, false);
 
         int[] imagePixelid = new int[cams.Length];
@@ -93,7 +120,7 @@ public class ExportColmap : MonoBehaviour
     }
     void writeCameraIntrinsics()
     {
-        string path = Application.streamingAssetsPath + "/cameras.txt";
+        string path = sparseReconFolder + "/cameras.txt";
         /*
             # Camera list with one line of data per camera:
             #   CAMERA_ID, MODEL, WIDTH, HEIGHT, PARAMS[]
@@ -128,7 +155,7 @@ public class ExportColmap : MonoBehaviour
     }
     void writeCamerapose(List<VisiblePointRecord> result)
     {
-        string path = Application.streamingAssetsPath + "/images.txt";
+        string path = sparseReconFolder + "/images.txt";
         /*
             # Image list with two lines of data per image:
             #   IMAGE_ID, QW, QX, QY, QZ, TX, TY, TZ, CAMERA_ID, NAME
@@ -183,11 +210,25 @@ public class ExportColmap : MonoBehaviour
         writer.Close();
     }
 
-    void writeCameraCapture()
+    void writeCameraCapture(string imagefolder)
     {
         for (int i = 0; i < names.Length; ++i)
         {
-            cams[i].GetComponent<Capture>().CaptureColor(Application.streamingAssetsPath + "/" + names[i] + ".png");
+            cams[i].GetComponent<Capture>().CaptureColor(imagefolder + names[i] + ".png");
+        }
+    }
+    void writeCameraMask(string maskfolder)
+    {
+        for (int i = 0; i < names.Length; ++i)
+        {
+            cams[i].GetComponent<Capture>().CaptureMask(maskfolder + names[i] + ".png");
+        }
+    }
+    void writeCameraRaw()
+    {
+        for (int i = 0; i < names.Length; ++i)
+        {
+            cams[i].GetComponent<Capture>().CaptureRaw(Application.streamingAssetsPath + "/" + names[i] + ".json");
         }
     }
 }

@@ -533,8 +533,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 3289244723733373185, guid: 4c7265f491bb4874daa2f01c2a662eb1, type: 3}
-  count: 5
-  radian: 3.1415925
+  count: 2
+  radian: 1
   camerVertical: 1
   camHeight: 1
   radius: 2
