@@ -8,34 +8,38 @@ public class ExportColmap : MonoBehaviour
 {
     public VerticesVisibility vertexIterator;
     public CamManager camManager;
-
+    public VritualRoute vritualRoute;
     string[] names;
     GameObject[] cams;
 
-    string imagefolder = Application.streamingAssetsPath + "/images/";
-    string imagefolder1 = Application.streamingAssetsPath + "/images_1/";
-    string maskfolder = Application.streamingAssetsPath + "/masks_1/";
-    string sparseReconBinary = Application.streamingAssetsPath + "/sparse/0";
-    string sparseReconFolder = Application.streamingAssetsPath + "/sparse/unity";
+    public string imagefolder = Application.streamingAssetsPath + "/images/";
+    public string imagefolder1 = Application.streamingAssetsPath + "/images_1/";
+    public string maskfolder = Application.streamingAssetsPath + "/masks_1/";
+    public string sparseReconBinary = Application.streamingAssetsPath + "/sparse/0";
+    public string sparseReconFolder = Application.streamingAssetsPath + "/sparse/unity";
     void Start()
     {
-        List<string> camName = new List<string>();
-        cams = camManager.cameras.ToArray();
-        for(int i = 0; i < cams.Length; i++)
-        {
-            camName.Add(string.Format("camer_{0}", i));
-        }
-        names = camName.ToArray();
+
     }
     void OnGUI()
     {
         if (GUI.Button(new Rect(10, 10, 200, 50), "save colmap model"))
         {
+            //init folder
             Directory.CreateDirectory(sparseReconBinary);
             Directory.CreateDirectory(sparseReconFolder);
             Directory.CreateDirectory(imagefolder);
             Directory.CreateDirectory(imagefolder1);
             Directory.CreateDirectory(maskfolder);
+
+            //init cameras
+            List<string> camName = new List<string>();
+            cams = camManager.cameras.ToArray();
+            for (int i = 0; i < cams.Length; i++)
+            {
+                camName.Add(string.Format("camer_{0}", i));
+            }
+            names = camName.ToArray();
 
             List<Camera> camComponents = new List<Camera>();
             foreach(GameObject obj in cams)
@@ -52,6 +56,8 @@ public class ExportColmap : MonoBehaviour
             writepoints3d(result);
             UnityEngine.Debug.Log("export colmap data done, get your result at " + Application.streamingAssetsPath);
             convertColmapModelTXT2Bin();
+
+            vritualRoute.saveRenderPose();
         }
 
         if (GUI.Button(new Rect(10, 60, 200, 50), "save raw data json"))

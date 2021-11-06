@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using UnityEditor;
 using UnityEngine;
 
 public class CamManager : MonoBehaviour
 {
     public GameObject prefab;
     public int count = 4;
+    public bool isLoop = false;
     public float radian = Mathf.PI;
     public bool camerVertical = false;
     // unit : cm
@@ -14,8 +17,9 @@ public class CamManager : MonoBehaviour
     public List<GameObject> cameras;
     void Start()
     {
+        isLoop = radian > Mathf.PI ? true : false;
         cameras = new List<GameObject>();
-        for(int i = 0; i < count+1; i++)
+        for(int i = 0; i < (count+(isLoop ? 0:1)); i++)
         {
             float percentag = (float)i / (float)count;
             float interpoRadian = radian * percentag;

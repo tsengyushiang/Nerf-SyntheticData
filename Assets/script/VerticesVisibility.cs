@@ -18,7 +18,7 @@ public class VerticesVisibility : MonoBehaviour
         mesh = meshfilter.mesh;
         (meshfilter.gameObject.AddComponent(typeof(MeshCollider)) as MeshCollider).sharedMesh = mesh;
         vertices = mesh.vertices;
-        Debug.Log(vertices.Length);
+        //Debug.Log(vertices.Length);
     }
 
     public List<VisiblePointRecord> calVisibility(Camera[] cams)
