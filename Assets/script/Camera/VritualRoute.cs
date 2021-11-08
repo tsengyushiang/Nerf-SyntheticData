@@ -40,7 +40,7 @@ public class VritualRoute : MonoBehaviour
                 Quaternion q = Quaternion.Lerp(cam.transform.rotation, nextcam.transform.rotation, percentage);
                 Vector3 p = Vector3.Lerp(cam.transform.position, nextcam.transform.position, percentage);
                 Matrix4x4 transform = new Matrix4x4();
-                transform.SetTRS(p, q, new Vector3(1.0f, 1.0f, 1.0f));
+                transform.SetTRS(p, q, new Vector3(0.1f, 0.1f, 0.1f));
 
                 matrixs.Add(transform);
                 //Matrix4x4 transform = cam.transform.localToWorldMatrix;

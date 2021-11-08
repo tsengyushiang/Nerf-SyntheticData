@@ -11,6 +11,7 @@ public class ExportColmap : MonoBehaviour
     public VritualRoute vritualRoute;
     string[] names;
     GameObject[] cams;
+    List<Camera> camComponents;
 
     public string imagefolder = Application.streamingAssetsPath + "/images/";
     public string imagefolder1 = Application.streamingAssetsPath + "/images_1/";
@@ -21,31 +22,41 @@ public class ExportColmap : MonoBehaviour
     {
 
     }
+
+    void initFolders()
+    {
+        //init folder
+        Directory.CreateDirectory(sparseReconBinary);
+        Directory.CreateDirectory(sparseReconFolder);
+        Directory.CreateDirectory(imagefolder);
+        Directory.CreateDirectory(imagefolder1);
+        Directory.CreateDirectory(maskfolder);
+    }
+    void initCams()
+    {
+        //init cameras
+        List<string> camName = new List<string>();
+        cams = camManager.cameras.ToArray();
+        for (int i = 0; i < cams.Length; i++)
+        {
+            camName.Add(string.Format("camer_{0}", i));
+        }
+        names = camName.ToArray();
+
+        camComponents = new List<Camera>();
+        foreach (GameObject obj in cams)
+        {
+            camComponents.Add(obj.GetComponent<Camera>());
+        }
+    } 
+
     void OnGUI()
     {
         if (GUI.Button(new Rect(10, 10, 200, 50), "save colmap model"))
         {
-            //init folder
-            Directory.CreateDirectory(sparseReconBinary);
-            Directory.CreateDirectory(sparseReconFolder);
-            Directory.CreateDirectory(imagefolder);
-            Directory.CreateDirectory(imagefolder1);
-            Directory.CreateDirectory(maskfolder);
-
-            //init cameras
-            List<string> camName = new List<string>();
-            cams = camManager.cameras.ToArray();
-            for (int i = 0; i < cams.Length; i++)
-            {
-                camName.Add(string.Format("camer_{0}", i));
-            }
-            names = camName.ToArray();
-
-            List<Camera> camComponents = new List<Camera>();
-            foreach(GameObject obj in cams)
-            {
-                camComponents.Add(obj.GetComponent<Camera>());
-            }            
+            initFolders();
+            initCams();
+            
             List<VisiblePointRecord> result = vertexIterator.calVisibility(camComponents.ToArray());
 
             writeCameraCapture(imagefolder);
@@ -62,6 +73,7 @@ public class ExportColmap : MonoBehaviour
 
         if (GUI.Button(new Rect(10, 60, 200, 50), "save raw data json"))
         {
+            initCams();
             writeCameraRaw();
         }
     }
@@ -227,7 +239,7 @@ public class ExportColmap : MonoBehaviour
     {
         for (int i = 0; i < names.Length; ++i)
         {
-            cams[i].GetComponent<Capture>().CaptureMask(maskfolder + names[i] + ".png");
+            cams[i].GetComponent<Capture>().CaptureMask(maskfolder + names[i] + ".png.png");
         }
     }
     void writeCameraRaw()

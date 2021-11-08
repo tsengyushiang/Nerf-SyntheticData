@@ -58,8 +58,7 @@ public class Capture : MonoBehaviour
         // raycast get depth value
         PinholeCameraModel m = GetComponent<PinholeCameraModel>();
         RaycastDepth depthSensor = GetComponent<RaycastDepth>();
-        uint[] depthRaw = depthSensor.rayCastDepthRaw(m.width,m.height,m.cx,m.cy,m.fx,m.fy, 1.0f/depthScale).ToArray();
-
+        List<uint> depthRaw = depthSensor.rayCastDepthRaw(m.width, m.height, m.cx, m.cy, m.fx, m.fy, 1.0f / depthScale);
         // fetch color
         Camera cam = GetComponent<Camera>();
         RenderTexture currentRT = RenderTexture.active;
@@ -69,9 +68,21 @@ public class Capture : MonoBehaviour
         Image.ReadPixels(new Rect(0, 0, cam.targetTexture.width, cam.targetTexture.height), 0, 0);
         Image.Apply();
         RenderTexture.active = currentRT;
-        Color[] colorRaw = Image.GetPixels();
+
+        List<int> colorRaw = new List<int>();
+        for (int j = 0; j < cam.targetTexture.height; j++)
+        {
+            for (int i = 0; i < cam.targetTexture.width; i++)
+            {
+                Color c = Image.GetPixel(i, cam.targetTexture.height-1-j);                
+                colorRaw.Add((int)(c.b*255));
+                colorRaw.Add((int)(c.g*255));
+                colorRaw.Add((int)(c.r*255));
+            }
+        }
+        Destroy(Image);
 
         // save json file
-        RawJsonExporter.savRawJson(m, colorRaw, depthRaw, depthScale, name);
+        RawJsonExporter.saveRawJson(m, colorRaw, depthRaw, depthScale, name);
     }
 }

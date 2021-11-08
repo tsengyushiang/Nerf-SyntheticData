@@ -16,26 +16,34 @@ public class c2wMaxtrix
 
 public class CamerInfo
 {
-    public List<int> color_raw;
-    public List<uint> depth_raw;
+    public List<int> colormap_raw;
+    public List<uint> depthmap_raw;
+    public float depthscale;
+    public int width;
+    public int height;
+    public float fx;
+    public float fy;
+    public float ppx;
+    public float ppy;
 }
 
 public class RawJsonExporter
 {
-    public static void savRawJson(PinholeCameraModel m,Color[] rgbaArray,uint[] depthArray,float depthsacle,string filepath)
+    public static void saveRawJson(PinholeCameraModel m, List<int> colorArray, List<uint> depthArray,float depthsacle,string filepath)
     {
-        //CamerInfo caminfo = new CamerInfo();
-        //for(int i = 0; i < m.width; i++)
-        //{
-        //    for(int j = 0; j < m.height; j++)
-        //    {
-
-        //    }
-        //}
-        //var class = new MyList();
-        //var outputString = JsonUtility.ToJson(class);
-        //File.WriteAllText("C:\\MyFile.json", outputString);
-
+        CamerInfo caminfo = new CamerInfo();
+        caminfo.depthmap_raw = depthArray;
+        caminfo.colormap_raw = colorArray;
+        caminfo.depthscale = depthsacle;
+        caminfo.width = m.width;
+        caminfo.height = m.height;
+        caminfo.fx = m.fx;
+        caminfo.fy = m.fy;
+        caminfo.ppx = m.cx;
+        caminfo.ppy = m.cy;
+        var outputString = JsonUtility.ToJson(caminfo);
+        System.IO.File.WriteAllText(filepath, outputString);
+        Debug.Log(filepath);
     }
 
     public static void saveMatrixRoute(List<Matrix4x4> matrixs, string filepath)
