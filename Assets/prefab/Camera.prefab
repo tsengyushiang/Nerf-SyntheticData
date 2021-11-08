@@ -99,10 +99,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 1280
   height: 720
-  fx: 612.51184
-  fy: 612.43445
-  cx: 636.66
-  cy: 366.721
+  fx: 600
+  fy: 600
+  cx: 640
+  cy: 360
 --- !u!114 &3289244723733373190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,7 +115,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81a6d7691edbf504bb899a8e6090b0cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FileCounter: 0
 --- !u!114 &3485297435942405267
 MonoBehaviour:
   m_ObjectHideFlags: 0
