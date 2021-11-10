@@ -49,7 +49,7 @@ public class VerticesVisibility : MonoBehaviour
                     //Debug.Log(hit.distance - dir.magnitude);
                     if (Mathf.Abs(hit.distance - dir.magnitude) < 1e-2)
                     {
-                        Debug.DrawLine(cam.gameObject.transform.position, vertex, Color.white, 1000);
+                        Debug.DrawLine(cam.gameObject.transform.position, vertex, Color.white, 5);
                         r.visible.Add(true);
                     }
                     else
