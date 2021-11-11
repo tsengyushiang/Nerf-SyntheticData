@@ -175,7 +175,7 @@ public class CameraExtrinsic
                 Quaternion q = Quaternion.Lerp(cam.rotation, nextcam.rotation, percentage);
                 Vector3 p = Vector3.Lerp(cam.position, nextcam.position, percentage);
                 Matrix4x4 transform = new Matrix4x4();
-                transform.SetTRS(p, q, new Vector3(0.1f, 0.1f, 0.1f));
+                transform.SetTRS(p, q, new Vector3(1.0f, 1.0f, 1.0f));
 
                 matrixs.Add(transform);
                 //Matrix4x4 transform = cam.transform.localToWorldMatrix;
